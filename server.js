@@ -1,12 +1,17 @@
-const express = require('express');
-
-const app = express();
-
-// Init middleware
-app.use(express.json({ extended: false }));
+const app = require('./app');
+import { PORT } from './config';
+const logger = require('./utils/logger');
 
 //Define Routes
+app.get('/', (req, res) => {
+  res.send('Welcome to StartHub...');
+});
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+app.listen(PORT, () =>
+  logger.log({
+    level: 'info',
+    message: `\nServer Listening on port ${PORT} !!!`,
+  })
+);
