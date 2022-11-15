@@ -4,8 +4,8 @@ import {
   authUser,
   registerUser,
   getUserProfile,
-} from '../controllers/userController.js';
-import verifyContact from '../controllers/verifyContact.js';
+} from '../controllers/user/userController.js';
+import verifyContact from '../controllers/user/verifyContact.js';
 import { protect } from '../middleware/authMiddleware.js';
 
 router.route('/').post(registerUser);
