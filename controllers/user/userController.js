@@ -1,11 +1,11 @@
 import asyncHandler from 'express-async-handler';
 import Joi from 'Joi';
 
-import OtpService from '../services/OtpService.js';
-import generateToken from '../utils/generateToken.js';
+import OtpService from '../../services/OtpService.js';
+import generateToken from '../../utils/generateToken.js';
 
-import User from '../models/user.js';
-import otpToken from '../models/otpToken.js';
+import User from '../../models/user.js';
+import otpToken from '../../models/otpToken.js';
 
 // @desc    Auth user & get token
 // @route    POST /api/users/login
