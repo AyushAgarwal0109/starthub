@@ -1,8 +1,8 @@
 import asyncHandler from 'express-async-handler';
 import Joi from 'joi';
 
-import user from '../models/user.js';
-import otpToken from '../models/otpToken.js';
+import user from '../../models/user.js';
+import otpToken from '../../models/otpToken.js';
 
 const verifyContact = asyncHandler(async (req, res, next) => {
   let { otp, contact } = req.body;
