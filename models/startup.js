@@ -17,16 +17,10 @@ const StartupSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-    },
     description: {
       type: String,
       required: true,
     },
-    phone: String,
     inceptionDate: {
       type: String,
       required: true,
@@ -35,11 +29,6 @@ const StartupSchema = mongoose.Schema(
     type: {
       type: String,
       default: 'private limited company',
-      enum: [
-        'private limited company',
-        'registered partnership firm',
-        'limited liability partnership',
-      ],
       required: true,
     },
     sector: {
@@ -49,13 +38,6 @@ const StartupSchema = mongoose.Schema(
     stage: {
       type: String,
       default: 'idea stage',
-      enum: [
-        'idea stage',
-        'proof of concept',
-        'beta launched',
-        'early traction',
-        'steady revenues',
-      ],
       required: true,
     },
     turnover: {
@@ -74,8 +56,11 @@ const StartupSchema = mongoose.Schema(
       },
       url: String,
     },
-    gstin: Number,
-    investmentRaised: Number,
+    gstin: String,
+    investmentRaised: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,
