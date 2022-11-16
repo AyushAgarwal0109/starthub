@@ -7,15 +7,6 @@ const InvestorSchema = mongoose.Schema(
       ref: 'User',
       required: true,
     },
-    name: {
-      type: String,
-      required: true,
-    },
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-    },
     phone: String,
     gender: String,
     dob: String,
@@ -43,14 +34,12 @@ const InvestorSchema = mongoose.Schema(
     addr: {
       state: String,
       city: String,
-      locality: String,
-      pincode: Number,
       location: {
         lat: Number,
         lon: Number,
       },
     },
-    gstin: Number,
+    gstin: String,
     certificates: {
       photoID: {
         pdfDoc: {

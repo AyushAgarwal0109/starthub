@@ -34,10 +34,9 @@ const authUser = asyncHandler(async (req, res) => {
 // @route    POST /api/users
 // @access   Public
 const registerUser = asyncHandler(async (req, res) => {
-  let { name, email, password, confirmPassword, role } = req.body;
+  let { name, email, password, confirmPassword } = req.body;
 
   name = name.toLowerCase();
-  role = role.toLowerCase();
 
   let signSchema = Joi.object({
     name: Joi.string().required(),
@@ -47,10 +46,9 @@ const registerUser = asyncHandler(async (req, res) => {
         tlds: { allow: ['com', 'net', 'in', 'edu'] },
       })
       .required(),
-    role: Joi.string().required().valid('investor', 'founder'),
   });
 
-  let error = signSchema.validate({ name, email, role }).error;
+  let error = signSchema.validate({ name, email }).error;
 
   if (error) {
     res.status(400);
@@ -88,7 +86,6 @@ const registerUser = asyncHandler(async (req, res) => {
     name,
     email,
     password,
-    role,
   });
 
   let otp = OtpService.generateOtp();
@@ -100,7 +97,6 @@ const registerUser = asyncHandler(async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
-      role: user.role,
       isAdmin: user.isAdmin,
       otp: otp,
       token: generateToken(user._id),

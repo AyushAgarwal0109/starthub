@@ -22,9 +22,7 @@ const UserSchema = mongoose.Schema(
     },
     role: {
       type: String,
-      default: 'founder',
       enum: ['investor', 'founder'],
-      required: true,
     },
     isAdmin: {
       type: Boolean,

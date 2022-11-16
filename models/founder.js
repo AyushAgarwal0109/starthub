@@ -7,15 +7,6 @@ const FounderSchema = mongoose.Schema(
       ref: 'User',
       required: true,
     },
-    name: {
-      type: String,
-      required: true,
-    },
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-    },
     phone: String,
     gender: String,
     dob: String,
@@ -23,8 +14,6 @@ const FounderSchema = mongoose.Schema(
     addr: {
       state: String,
       city: String,
-      locality: String,
-      pincode: Number,
       location: {
         lat: Number,
         lon: Number,
