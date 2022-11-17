@@ -21,6 +21,22 @@ const StartupSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    availableStocks: {
+      type: Number,
+      default: 0,
+    },
+    currentStockPrice: {
+      type: Number,
+      default: 0,
+    },
+    stocksSold: {
+      type: Number,
+      default: 0,
+    },
+    investmentRaised: {
+      type: Number,
+      default: 0,
+    },
     inceptionDate: {
       type: String,
       required: true,
@@ -57,10 +73,6 @@ const StartupSchema = mongoose.Schema(
       url: String,
     },
     gstin: String,
-    investmentRaised: {
-      type: Number,
-      default: 0,
-    },
   },
   {
     timestamps: true,
