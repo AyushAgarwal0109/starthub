@@ -3,6 +3,7 @@ import Joi from 'Joi';
 
 import User from '../../models/user.js';
 import Founder from '../../models/founder.js';
+import Investor from '../../models/investor.js';
 import Startup from '../../models/startup.js';
 
 // @desc    Register a new Startup
@@ -154,4 +155,102 @@ const registerStartup = asyncHandler(async (req, res) => {
   }
 });
 
-export { registerStartup };
+// @desc    Invest in a startup
+// @route    PATCH /api/startup/invest/:id
+// @access   Private
+const investStartup = asyncHandler(async (req, res) => {
+  const { noofstocks } = req.body;
+  const { _id, role } = req.user;
+  const { id } = req.params;
+
+  let investmentSchema = Joi.object({
+    noofstocks: Joi.number().min(1),
+  });
+
+  let error = investmentSchema.validate({ noofstocks }).error;
+
+  if (error) {
+    res.status(400);
+    throw new Error('Invalid data input');
+  }
+
+  if (!_id || !role || role !== 'investor') {
+    res.status(400);
+    throw new Error('Invalid user');
+  }
+
+  const investor = await Investor.findById(_id);
+  if (!investor) {
+    res.status(400);
+    throw new Error('Investor not registered');
+  }
+
+  const startup = await Startup.findById(id);
+  if (!startup) {
+    res.status(400);
+    throw new Error('Startup not registered');
+  }
+
+  if (noofstocks > startup.availableStocks) {
+    res.status(400);
+    throw new Error('Stocks unavailable');
+  }
+
+  startup.investors.push(_id);
+  startup.availableStocks -= noofstocks;
+  startup.stocksSold += noofstocks;
+  startup.investmentRaised += startup.currentStockPrice * noofstocks;
+  await startup.save();
+
+  res.status(200).json({
+    startup,
+  });
+});
+
+// @desc    Update startup information
+// @route    PATCH /api/startup/update/:id
+// @access   Private
+const updateStartupInfo = asyncHandler(async (req, res) => {
+  const {} = req.body;
+  const { _id, role } = req.user;
+  const { id } = req.params;
+
+  let infoSchema = Joi.object({});
+
+  let error = infoSchema.validate({}).error;
+
+  if (error) {
+    res.status(400);
+    throw new Error('Invalid data input');
+  }
+
+  if (!_id || !role || role !== 'founder') {
+    res.status(400);
+    throw new Error('Invalid user');
+  }
+
+  const founder = await Founder.findById(_id);
+  if (!founder) {
+    res.status(400);
+    throw new Error('Founder not registered');
+  }
+
+  const startup = await Startup.findById(id);
+  if (!startup) {
+    res.status(400);
+    throw new Error('Startup not registered');
+  }
+
+  if (startup.founder !== _id) {
+    res.status(400);
+    throw new Error('Startup not owned by the current founder');
+  }
+
+  await startup.save();
+
+  res.status(200).json({
+    startup,
+  });
+});
+
+export { registerStartup, investStartup, updateStartupInfo };
