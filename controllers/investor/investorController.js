@@ -3,9 +3,10 @@ import Joi from 'Joi';
 
 import User from '../../models/user.js';
 import Investor from '../../models/investor.js';
+import Startup from '../../models/startup.js';
 
 // @desc    Register a new Investor
-// @route    POST /api/users/investor
+// @route    POST /api/investors
 // @access   Private
 const registerInvestor = asyncHandler(async (req, res) => {
   let { phone, gender, dob, occupation, budget, state, city, gstin } = req.body;
@@ -127,4 +128,43 @@ const registerInvestor = asyncHandler(async (req, res) => {
   }
 });
 
-export { registerInvestor };
+// @desc    Get investor profile
+// @route    GET /api/investors/profile
+// @access   Private
+const getInvestorProfile = asyncHandler(async (req, res) => {
+  const investor = await Investor.findById(req.user._id).populate(
+    '_id',
+    'name email verified role'
+  );
+  if (investor) {
+    res.json({
+      investor,
+    });
+  } else {
+    res.status(404);
+    throw new Error('Not registered as an Investor');
+  }
+});
+
+// @desc    Get startups invested into
+// @route    GET /api/investors/startups
+// @access   Private
+const getInvestedStartups = asyncHandler(async (req, res) => {
+  const startups = await Startup.find({
+    'investors.name': req.user._id,
+  }).select(
+    'founder investors name description availableStocks currentStockPrice existenceYears type sector city'
+  );
+
+  if (startups) {
+    res.json({
+      startups,
+      count: startups.length,
+    });
+  } else {
+    res.status(404);
+    throw new Error('Not invested in any startups');
+  }
+});
+
+export { registerInvestor, getInvestorProfile, getInvestedStartups };

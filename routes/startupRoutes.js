@@ -4,10 +4,14 @@ import {
   registerStartup,
   investStartup,
   updateStartupInfo,
+  getAllStartups,
+  getStartupInfo,
 } from '../controllers/startup/startupController.js';
 import { protect } from '../middleware/authMiddleware.js';
 
 router.route('/').post(protect, registerStartup);
+router.route('/all').get(getAllStartups);
+router.route('/info/:id').get(protect, getStartupInfo);
 router.route('/invest/:id').patch(protect, investStartup);
 router.route('/update/:id').patch(protect, updateStartupInfo);
 

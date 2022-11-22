@@ -91,4 +91,22 @@ const registerFounder = asyncHandler(async (req, res) => {
   }
 });
 
-export { registerFounder };
+// @desc    Get founder profile
+// @route    GET /api/founders/profile
+// @access   Private
+const getFounderProfile = asyncHandler(async (req, res) => {
+  const founder = await Founder.findById(req.user._id).populate(
+    '_id',
+    'name email verified role'
+  );
+  if (founder) {
+    res.json({
+      founder,
+    });
+  } else {
+    res.status(404);
+    throw new Error('Not registered as a Founder');
+  }
+});
+
+export { registerFounder, getFounderProfile };

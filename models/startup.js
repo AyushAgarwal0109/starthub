@@ -9,8 +9,13 @@ const StartupSchema = mongoose.Schema(
     },
     investors: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Investor',
+        name: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Investor',
+        },
+        investment: {
+          type: Number,
+        },
       },
     ],
     name: {

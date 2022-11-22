@@ -196,7 +196,10 @@ const investStartup = asyncHandler(async (req, res) => {
     throw new Error('Stocks unavailable');
   }
 
-  startup.investors.push(_id);
+  startup.investors.push({
+    name: _id,
+    investment: startup.currentStockPrice * noofstocks,
+  });
   startup.availableStocks -= noofstocks;
   startup.stocksSold += noofstocks;
   startup.investmentRaised += startup.currentStockPrice * noofstocks;
@@ -253,4 +256,47 @@ const updateStartupInfo = asyncHandler(async (req, res) => {
   });
 });
 
-export { registerStartup, investStartup, updateStartupInfo };
+// @desc    Get startup info
+// @route    GET /api/startup/info/:id
+// @access   Private
+const getStartupInfo = asyncHandler(async (req, res) => {
+  const startup = await Startup.findById(req.params.id);
+
+  if (startup.founder !== req.params.id) {
+    res.status(404);
+    throw new Error('Startup not owned by the founder');
+  }
+
+  if (startup) {
+    res.json({
+      startup,
+    });
+  } else {
+    res.status(404);
+    throw new Error('Startup not registered');
+  }
+});
+
+// @desc    Get all startups
+// @route    GET /api/startup/all
+// @access   Public
+const getAllStartups = asyncHandler(async (req, res) => {
+  const startups = await Startup.find();
+  if (startups) {
+    res.json({
+      startups,
+      count: startups.length,
+    });
+  } else {
+    res.status(404);
+    throw new Error('No startups found');
+  }
+});
+
+export {
+  registerStartup,
+  investStartup,
+  updateStartupInfo,
+  getStartupInfo,
+  getAllStartups,
+};
