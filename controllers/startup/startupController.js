@@ -55,7 +55,7 @@ const registerStartup = asyncHandler(async (req, res) => {
       ),
     turnover: Joi.number().required(),
     city: Joi.string().required(),
-    url: Joi.string().required(),
+    url: Joi.string(),
     investmentRaised: Joi.number(),
   });
 
@@ -156,7 +156,7 @@ const registerStartup = asyncHandler(async (req, res) => {
 });
 
 // @desc    Invest in a startup
-// @route    PATCH /api/startup/invest/:id
+// @route    POST /api/startup/invest/:id
 // @access   Private
 const investStartup = asyncHandler(async (req, res) => {
   const { noofstocks } = req.body;
@@ -214,13 +214,16 @@ const investStartup = asyncHandler(async (req, res) => {
 // @route    PATCH /api/startup/update/:id
 // @access   Private
 const updateStartupInfo = asyncHandler(async (req, res) => {
-  const {} = req.body;
+  const { availableStocks, currentStockPrice } = req.body;
   const { _id, role } = req.user;
   const { id } = req.params;
 
-  let infoSchema = Joi.object({});
+  let infoSchema = Joi.object({
+    availableStocks: Joi.number(),
+    currentStockPrice: Joi.number(),
+  });
 
-  let error = infoSchema.validate({}).error;
+  let error = infoSchema.validate({ availableStocks, currentStockPrice }).error;
 
   if (error) {
     res.status(400);
@@ -244,11 +247,13 @@ const updateStartupInfo = asyncHandler(async (req, res) => {
     throw new Error('Startup not registered');
   }
 
-  if (startup.founder !== _id) {
+  if (!startup.founder.equals(_id)) {
     res.status(400);
     throw new Error('Startup not owned by the current founder');
   }
 
+  startup.availableStocks = availableStocks;
+  startup.currentStockPrice = currentStockPrice;
   await startup.save();
 
   res.status(200).json({
@@ -262,10 +267,10 @@ const updateStartupInfo = asyncHandler(async (req, res) => {
 const getStartupInfo = asyncHandler(async (req, res) => {
   const startup = await Startup.findById(req.params.id);
 
-  if (startup.founder !== req.params.id) {
-    res.status(404);
-    throw new Error('Startup not owned by the founder');
-  }
+  // if (startup.founder !== req.params.id) {
+  //   res.status(404);
+  //   throw new Error('Startup not owned by the founder');
+  // }
 
   if (startup) {
     res.json({
