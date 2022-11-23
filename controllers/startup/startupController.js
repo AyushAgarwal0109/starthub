@@ -263,14 +263,9 @@ const updateStartupInfo = asyncHandler(async (req, res) => {
 
 // @desc    Get startup info
 // @route    GET /api/startup/info/:id
-// @access   Private
+// @access   Public
 const getStartupInfo = asyncHandler(async (req, res) => {
   const startup = await Startup.findById(req.params.id);
-
-  // if (startup.founder !== req.params.id) {
-  //   res.status(404);
-  //   throw new Error('Startup not owned by the founder');
-  // }
 
   if (startup) {
     res.json({

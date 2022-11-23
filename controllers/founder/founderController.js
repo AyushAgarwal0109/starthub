@@ -3,6 +3,7 @@ import Joi from 'Joi';
 
 import User from '../../models/user.js';
 import Founder from '../../models/founder.js';
+import Startup from '../../models/startup.js';
 
 // @desc    Register a new Founder
 // @route    POST /api/founders
@@ -109,4 +110,21 @@ const getFounderProfile = asyncHandler(async (req, res) => {
   }
 });
 
-export { registerFounder, getFounderProfile };
+// @desc    Get startup info
+// @route    GET /api/founders/startup
+// @access   Private
+const getStartupInfo = asyncHandler(async (req, res) => {
+  console.log(req.user);
+  const startup = await Startup.findOne({ founder: req.user._id });
+
+  if (startup) {
+    res.json({
+      startup,
+    });
+  } else {
+    res.status(404);
+    throw new Error('Startup not registered');
+  }
+});
+
+export { registerFounder, getFounderProfile, getStartupInfo };

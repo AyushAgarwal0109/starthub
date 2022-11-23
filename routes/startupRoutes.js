@@ -11,7 +11,7 @@ import { protect } from '../middleware/authMiddleware.js';
 
 router.route('/').post(protect, registerStartup);
 router.route('/all').get(getAllStartups);
-router.route('/info/:id').get(protect, getStartupInfo);
+router.route('/info/:id').get(getStartupInfo);
 router.route('/invest/:id').post(protect, investStartup);
 router.route('/update/:id').patch(protect, updateStartupInfo);
 
